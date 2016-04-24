@@ -55,7 +55,6 @@ House::House(string housePath) : docking()
 		houseFile.close();
 		frameHouse();
 		findDocking();
-
 	}
 
 }
@@ -64,46 +63,59 @@ House::House(string housePath) : docking()
 	: row(_row), col(_col), houseMap(_houseMap) {}*/
 
 
-House :: ~House()//Todo:
+House::~House()//Todo:
 {
 }
-char House :: getLocationInfo(int x, int y)
+
+char House::getLocationInfo(int x, int y)
+{
+	return houseMap[x][y];
+}
+
+char House::getDirtInfo(int x, int y)
 {
 	if (houseMap[x][y] == ' ' || houseMap[x][y] == House::DOCKING) {
 		return '0';
 	}
-	return this->houseMap[x][y];
+	return houseMap[x][y];
 }
+
+void House::cleanDirt(int x, int y)
+{
+	houseMap[x][y]--;
+}
+
 Point House::getDocking()
 {
 	return this->docking;//ToCheck: if it returns a copy or the same Point
 }
 
-void House :: frameHouse()
+void House::frameHouse()
 {
-	for (int i; i < this->row; i++)
+	for (int i; i < row; i++)
 	{
-		this->houseMap[i][0] = House::WALL;
-		this->houseMap[i][this->col] = House::WALL;
+		houseMap[i][0] = House::WALL;
+		houseMap[i][col] = House::WALL;
 	}
-	for (int j; j < this->row; j++)
+	for (int j; j < row; j++)
 	{
-		this->houseMap[0][j] = House::WALL;
-		this->houseMap[this->row][j] = House::WALL;
+		houseMap[0][j] = House::WALL;
+		houseMap[row][j] = House::WALL;
 	}
 }
-void House :: findDocking()
+
+void House::findDocking()
 {
-	for (int i=0; i < this->row; i++) {
-		for (int j = 0; j < this->col; j++) 
+	for (int i=0; i < row; i++) {
+		for (int j = 0; j < col; j++) 
 		{
-			if(this->houseMap[i][j] == House::DOCKING)
+			if(houseMap[i][j] == House::DOCKING)
 			{
-				if (this->docking.getX() == -1)
-					this->docking.setXY(i, j);
+				if (docking.getX() == -1)
+					docking.setXY(i, j);
 				else
 				{
-					this->docking.setXY(-1, -1);
+					docking.setXY(-1, -1);
 					return;
 				}
 					
@@ -111,6 +123,7 @@ void House :: findDocking()
 		}
 	}
 }
+
 /*void houseFileParser(string path)
 {
 	ifstream houseFile(path);

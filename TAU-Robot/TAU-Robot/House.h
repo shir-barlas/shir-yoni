@@ -21,6 +21,12 @@ public:
 	//House(Point _dock);
 	~House();
 	char getLocationInfo(int x, int y);
+
+	char getDirtInfo(int x, int y);
+
+	//cleans one unit of dirt in the requested location
+	void cleanDirt(int x, int y);
+
 	Point getDocking();
 		
 private:
