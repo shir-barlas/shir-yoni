@@ -13,6 +13,8 @@ Simulation::Simulation(AbstractAlgorithm *_algorithm, House _currHouse, int tota
 	batteryCapacity = conf[2];
 	batteryConsumptionRate = conf[3];
 	batteryRechargeRate = conf[4];
+	currentBattery = batteryCapacity;
+	numOfStepsToFinish = maxStepsAfterWinner;
 
 	AbstractSensor * sensor = new Sensor(&currHouse, &robotLocation);
 
@@ -27,33 +29,44 @@ Simulation::Simulation(AbstractAlgorithm *_algorithm, House _currHouse, int tota
 	algorithm->setConfiguration(configs);
 }
 
-
 Simulation::~Simulation()//ToDo
 {
 }
 
-void Simulation::simulateStep()
+Simulation::status Simulation::simulateStep(bool thereIsWinner)
 {
+	//handle battery use
+	if (currHouse.getLocationInfo(robotLocation.getX(), robotLocation.getY()) == House::DOCKING)
+		currentBattery = min(batteryCapacity, currentBattery + batteryRechargeRate);
+	else
+	{
+		if (currentBattery <= 0)
+			return BatteryEmpty;
+		currentBattery = max(currentBattery - batteryConsumptionRate, 0);
+	}
+
+	if (thereIsWinner || (numOfStepsMade >= maxSteps - maxStepsAfterWinner)) 
+	{
+		if (numOfStepsToFinish == 0)
+			return OutOfMoves;
+		algorithm->aboutToFinish(numOfStepsToFinish);
+		numOfStepsToFinish--;
+	}
+	
+	//handle algorithm step
 	Direction move = algorithm->step();
 
 	switch (move) {
 	case Direction::East:
-		if (isLegalMove(1, 0))
-			makeMove(1, 0);
-
-		break;
+		return makeMove(1, 0);
 	case Direction::West:
-		cout << "West" << endl;
-		break;
+		return makeMove(-1, 0);
 	case Direction::South:
-		cout << "South" << endl;
-		break;
+		return makeMove(0, -1);
 	case Direction::North:
-		cout << "North" << endl;
-		break;
+		return makeMove(0, 1);
 	case Direction::Stay:
-		throw UnexpectedDirection(Direction::Stay);
-		break;
+		return makeMove(0, 0);
 	}
 }
 
@@ -61,14 +74,27 @@ bool Simulation::isLegalMove(int x, int y)
 {
 	if (currHouse.getLocationInfo(robotLocation.getX() + x, robotLocation.getY() + y) == House::WALL)
 		return false;
-	return true;
+	else
+		return true;
 }
 
-void Simulation::makeMove(int x, int y)
+bool Simulation::isDone()
 {
+	if (dirtLeft == 0)
+		return true;
+	else
+		return false;
+}
+
+Simulation::status Simulation::makeMove(int x, int y)
+{
+	if (!isLegalMove(x, y))
+		return IllegalMove;
 
 	robotLocation.setXY(robotLocation.getX() + x, robotLocation.getY() + y);
 	char content = currHouse.getLocationInfo(robotLocation.getX(), robotLocation.getY());
+
+	numOfStepsMade++;
 
 	switch (content)
 	{
@@ -76,10 +102,13 @@ void Simulation::makeMove(int x, int y)
 	case ' ':
 		break;
 	case House::DOCKING:
+		if (isDone())
+			return Done;
 		break;
 	default:
 		currHouse.cleanDirt(robotLocation.getX(), robotLocation.getY());
 		dirtLeft--;
 		break;
 	}
+	return StepMade;
 }

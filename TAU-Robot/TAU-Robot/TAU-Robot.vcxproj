@@ -124,6 +124,7 @@
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Sensor.cpp" />
     <ClCompile Include="Simulation.cpp" />
+    <ClCompile Include="Simulator.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

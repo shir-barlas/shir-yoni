@@ -11,4 +11,14 @@ int main(int argc, char* argv[])
 	string houseSuffix = ".house";
 	string algoSuffix = "_.so"; //irrelevant for ex1
 
+	int config[5];
+	int numOfAlgorithms;
+	int numOfHouses;
+
+	House allHouses*;
+	Simulation allSimulations;
+	AbstractAlgorithm *algorit;
+
+	
+
 }
