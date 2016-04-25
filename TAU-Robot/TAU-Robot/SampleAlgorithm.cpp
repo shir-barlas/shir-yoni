@@ -2,7 +2,7 @@
 #include "Direction.h"
 #include <cstdlib>
 
-class SampleAlgorithm : AbstractAlgorithm
+class SampleAlgorithm : public AbstractAlgorithm
 {
 	int maxStepsAfrterWinner;
 	int batteryCapacity;
@@ -12,6 +12,8 @@ class SampleAlgorithm : AbstractAlgorithm
 	const AbstractSensor *algorithmSensor;
 
 public:
+	SampleAlgorithm() {}
+
 	void setSensor(const AbstractSensor& sensor)
 	{
 		algorithmSensor = &sensor;

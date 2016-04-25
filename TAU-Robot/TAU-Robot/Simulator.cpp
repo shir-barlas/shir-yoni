@@ -1,4 +1,5 @@
 #include "Simulation.h"
+#include "SampleAlgorithm.cpp"
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -74,8 +75,8 @@ class Simulator
 		numOfWinnerSteps = config[0];//TODO: make sure it is 0
 		bool isThereAWinner = false;
 		House house = House();
-		AbstractAlgorithm algorithm = SampleAlgorithm();
-		Simulation simulation = Simulation(&algorithm, house, config);
+		AbstractAlgorithm * algorithm = &SampleAlgorithm();
+		Simulation simulation = Simulation(algorithm, house, config);
 
 		while (!isThereAWinner)
 		{
