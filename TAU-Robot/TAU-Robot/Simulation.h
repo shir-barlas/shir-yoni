@@ -9,6 +9,8 @@
 #include "Point.h";
 #include <map>;
 #include <algorithm>
+
+
 using namespace std;
 
 class Simulation
@@ -21,6 +23,8 @@ class Simulation
 	int dirtLeft;
 	int numOfStepsMade = 0;
 	int numOfStepsToFinish;
+	int positionInCompetition;
+	int score;
 
 	int maxSteps;
 	int maxStepsAfterWinner;
@@ -30,7 +34,7 @@ class Simulation
 
 
 public:
-	Simulation(AbstractAlgorithm *_algorithm, House _currHouse ,int totalDirt, int conf[5]);
+	Simulation(AbstractAlgorithm *_algorithm, House _currHouse , int conf[5]);
 
 	~Simulation();
 	
@@ -48,5 +52,23 @@ public:
 
 	//move as requsted. x and y are relative to robot location
 	status makeMove(int x, int y);
+
+	//for score calculation
+	int getDirtLeft();
+
+	//check if robot is in docking
+	bool isRobotInDocking();
+
+
+	int getNumOfStepsMade();
+
+	int getPositionInCompetition();
+
+	void setPositionInCompetition(int position);
+
+	int getScore();
+
+	void setScore(int new_score);
+
 };
 

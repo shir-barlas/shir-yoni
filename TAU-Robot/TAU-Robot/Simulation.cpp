@@ -3,11 +3,12 @@
 
 
 
-Simulation::Simulation(AbstractAlgorithm *_algorithm, House _currHouse, int totalDirt, int conf[5])
-: algorithm(_algorithm), currHouse(_currHouse), dirtLeft(totalDirt)
+Simulation::Simulation(AbstractAlgorithm *_algorithm, House _currHouse, int conf[5])
+: algorithm(_algorithm), currHouse(_currHouse)
 {
-	docking = currHouse.getDocking;//ToCheck: not sure if this field needed
-	robotLocation = *(new Point(docking.getX(),docking.getY()));//ToCheck:
+	//docking = currHouse.getDocking;//ToCheck: not sure if this field needed
+	robotLocation = Point(docking.getX(),docking.getY());//ToCheck: need to check if it is constructed well
+	dirtLeft = currHouse.getTotalDirt();
 	maxSteps = conf[0];
 	maxStepsAfterWinner = conf[1];
 	batteryCapacity = conf[2];
@@ -16,7 +17,7 @@ Simulation::Simulation(AbstractAlgorithm *_algorithm, House _currHouse, int tota
 	currentBattery = batteryCapacity;
 	numOfStepsToFinish = maxStepsAfterWinner;
 
-	AbstractSensor * sensor = new Sensor(&currHouse, &robotLocation);
+	Sensor sensor = Sensor(&currHouse, &robotLocation);//TODO: need to check if it is constructed well
 
 	map<string, int> configs;
 	configs["maxSteps"] = maxSteps;
@@ -25,7 +26,7 @@ Simulation::Simulation(AbstractAlgorithm *_algorithm, House _currHouse, int tota
 	configs["batteryConsumptionRate"] = batteryConsumptionRate;
 	configs["batteryRechargeRate"] = batteryRechargeRate;
 
-	algorithm->setSensor(*sensor);
+	algorithm->setSensor(sensor);
 	algorithm->setConfiguration(configs);
 }
 
@@ -112,3 +113,42 @@ Simulation::status Simulation::makeMove(int x, int y)
 	}
 	return StepMade;
 }
+
+int Simulation::getDirtLeft()
+{
+	return dirtLeft;
+}
+
+bool Simulation::isRobotInDocking()
+{
+	if (currHouse.getLocationInfo(robotLocation.getX(), robotLocation.getY() == House::DOCKING))
+		return true;
+	return false;
+}
+
+int Simulation::getNumOfStepsMade()
+{
+	return numOfStepsMade;
+}
+
+int Simulation::getPositionInCompetition()
+{
+	return positionInCompetition;
+}
+
+void Simulation::setPositionInCompetition(int position)
+{
+	positionInCompetition = position;
+}
+
+int Simulation::getScore()
+{
+	return score;
+}
+
+void Simulation::setScore(int new_score)
+{
+	score = new_score;
+}
+
+
